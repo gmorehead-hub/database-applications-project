@@ -1,0 +1,174 @@
+-- TM4 Grocery-World SQL --
+
+DROP TABLE store_transaction;
+DROP TABLE product;
+DROP TABLE staffing;
+DROP TABLE staff_role;
+DROP TABLE employee;
+DROP TABLE department;
+DROP TABLE store;
+DROP TABLE member;
+
+-- MEMBER --
+CREATE TABLE member (
+loyalty_no INT NOT NULL,
+f_name VARCHAR (20),
+l_name VARCHAR (20),
+phone_no VARCHAR (15),
+email VARCHAR (25),
+loyalty_pts INT
+);
+
+ALTER TABLE member 
+ADD CONSTRAINT PK_member 
+PRIMARY KEY (loyalty_no);
+
+-- STORE --
+CREATE TABLE store (
+store_id INT NOT NULL,
+street VARCHAR (25),
+city VARCHAR (20),
+state char (2),
+phone_no VARCHAR (15),
+zip CHAR (5) -- Zip Codes leading with '0' would lose leading '0' using INT
+);
+
+ALTER TABLE store 
+ADD CONSTRAINT PK_store 
+PRIMARY KEY (store_id);
+
+-- DEPARTMENT --
+CREATE TABLE department (
+department_id INT NOT NULL,
+department_name VARCHAR (25),
+temperature_controlled BIT,
+store_id INT NOT NULL
+);
+
+ALTER TABLE department 
+ADD CONSTRAINT PK_department 
+PRIMARY KEY (department_id);
+
+-- EMPLOYEE --
+CREATE TABLE employee (
+emp_id INT NOT NULL,
+f_name VARCHAR (20),
+l_name VARCHAR (20),
+salary MONEY,
+store_id INT NOT NULL
+);
+
+ALTER TABLE employee 
+ADD CONSTRAINT PK_employee 
+PRIMARY KEY (emp_id);
+
+-- ROLE --
+CREATE TABLE staff_role (
+role_id INT NOT NULL,
+title VARCHAR (15),
+description VARCHAR (50),
+department_id INT NOT NULL
+);
+
+ALTER TABLE staff_role 
+ADD CONSTRAINT PK_role 
+PRIMARY KEY (role_id);
+
+-- STAFFING --
+CREATE TABLE staffing (
+staff_id INT NOT NULL,
+needed_employees INT,
+emp_id INT NOT NULL,
+role_id INT NOT NULL
+);
+
+ALTER TABLE staffing 
+ADD CONSTRAINT PK_staffing 
+PRIMARY KEY (staff_id);
+
+-- PRODUCT --
+CREATE TABLE product (
+product_id INT NOT NULL,
+name VARCHAR (25),
+description VARCHAR (50), 
+price MONEY,
+perishable BIT,
+expiration_date DATE,
+last_delivery DATE,
+next_delivery DATE,
+department_id INT NOT NULL
+);
+
+ALTER TABLE product 
+ADD CONSTRAINT PK_product 
+PRIMARY KEY (product_id);
+
+-- TRANSACTION --
+CREATE TABLE store_transaction (
+receipt_no INT NOT NULL,
+total MONEY,
+register_no INT,
+trans_type CHAR (6) CHECK (trans_type = 'Return' or trans_type = 'Sale'),
+store_id INT NOT NULL,
+product_id INT NOT NULL,
+loyalty_no INT NOT NULL,
+emp_id INT NOT NULL
+);
+
+ALTER TABLE store_transaction 
+ADD CONSTRAINT PK_transaction 
+PRIMARY KEY (receipt_no);
+
+-------------------
+-- FOREIGN KEYS --
+-------------------
+
+ALTER TABLE department
+ADD CONSTRAINT FK_department_store 
+FOREIGN KEY (store_id)
+REFERENCES store (store_id);
+
+ALTER TABLE employee
+ADD CONSTRAINT FK_employee_store 
+FOREIGN KEY (store_id)
+REFERENCES store (store_id);
+
+ALTER TABLE staff_role
+ADD CONSTRAINT FK_role_department 
+FOREIGN KEY (department_id)
+REFERENCES department (department_id);
+
+ALTER TABLE staffing
+ADD CONSTRAINT FK_staffing_employee 
+FOREIGN KEY (emp_id)
+REFERENCES employee (emp_id);
+
+ALTER TABLE staffing
+ADD CONSTRAINT FK_staffing_role 
+FOREIGN KEY (role_id)
+REFERENCES staff_role (role_id);
+
+ALTER TABLE product
+ADD CONSTRAINT FK_product_department 
+FOREIGN KEY (department_id)
+REFERENCES department (department_id);
+
+ALTER TABLE store_transaction
+ADD CONSTRAINT FK_transaction_store 
+FOREIGN KEY (store_id)
+REFERENCES store (store_id);
+
+ALTER TABLE store_transaction
+ADD CONSTRAINT FK_transaction_product 
+FOREIGN KEY (product_id)
+REFERENCES product (product_id);
+
+ALTER TABLE store_transaction
+ADD CONSTRAINT FK_transaction_member 
+FOREIGN KEY (loyalty_no)
+REFERENCES member (loyalty_no);
+
+ALTER TABLE store_transaction
+ADD CONSTRAINT FK_transaction_employee 
+FOREIGN KEY (emp_id)
+REFERENCES employee (emp_id);
