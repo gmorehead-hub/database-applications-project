@@ -97,7 +97,7 @@ CREATE TABLE product (
 product_id INT NOT NULL,
 name VARCHAR (25) NOT NULL,
 description VARCHAR (50), 
-price MONEY NOT NULL,
+price MONEY NOT NULL CHECK (price >= 0 AND price <= 500),
 perishable BIT,
 expiration_date DATE,
 last_delivery DATE,
