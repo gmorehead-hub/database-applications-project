@@ -61,6 +61,7 @@ f_name VARCHAR (20) NOT NULL,
 l_name VARCHAR (20),
 salary MONEY NOT NULL,
 store_id INT NOT NULL
+manager_id INT NOT NULL,
 );
 
 ALTER TABLE employee 
