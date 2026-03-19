@@ -1,6 +1,7 @@
 -------------------------------------------------------------------
 -- TM4 Grocery-World SQL --
 -- Austin Baker, Ethan Pierce, Grant Morehead, Pedro Pablo Gomez --
+-- CISA 3365, Downey, Project Phase II, 3/19/26
 -------------------------------------------------------------------
 
 ----------------------------------------------------------------
@@ -201,11 +202,11 @@ VALUES
 -- 2. STORE
 INSERT INTO store (store_id, street, city, store_state, phone_no, zip)
 VALUES
-(20001, '123 Main St', 'Conway', 'AR', '555-2001', '72034'),
-(20002, '456 Oak Ave', 'Little Rock', 'AR', '555-2002', '72201'),
-(20003, '789 Pine Ln', 'Fayetteville', 'AR', '555-2003', '72701'),
-(20004, NULL, 'Bentonville', 'AR', '555-2004', NULL),
-(20005, '321 Elm St', 'Jonesboro', 'AR', '555-2005', '72401');
+(20001, '123 Main St', 'Conway', 'AR', '+1(501)555-2001', '72034'),
+(20002, '456 Oak Ave', 'Little Rock', 'AR', '+1(50)555-2002', '72201'),
+(20003, '789 Pine Ln', 'Fayetteville', 'AR', '+1(479)555-2003', '72701'),
+(20004, NULL, 'Bentonville', 'AR', '+1(479)555-2004', NULL),
+(20005, '321 Elm St', 'Jonesboro', 'AR', '+1(870)555-2005', '72401');
 
 -- 3. DEPARTMENT
 INSERT INTO department (department_id, department_name, temperature_controlled, store_id)
@@ -278,7 +279,7 @@ VALUES
 (80009, 1.25, 2, 'Sale', 20001, 70003, 10001, 40001),
 (80010, 4.99, 6, 'Sale', 20005, 70010, 10010, 40010);
 
--- These will not be included on the copy file we turn in as per Phase II instructions
+-- These will not be included on the copy file we turn in as per Phase II instructions, but are here so we can view the output tables
 SELECT * FROM member;
 SELECT * FROM store;
 SELECT * FROM department;
