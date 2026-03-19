@@ -1,6 +1,7 @@
-----------------------------------------------------------------
+-------------------------------------------------------------------
 -- TM4 Grocery-World SQL --
-----------------------------------------------------------------
+-- Austin Baker, Ethan Pierce, Grant Morehead, Pedro Pablo Gomez --
+-------------------------------------------------------------------
 
 ----------------------------------------------------------------
 -- TABLE CREATION --
@@ -33,7 +34,7 @@ CREATE TABLE store (
 store_id INT NOT NULL,
 street VARCHAR (25),
 city VARCHAR (20),
-store_state char (2) NOT NULL,
+store_state CHAR (2) NOT NULL,
 phone_no VARCHAR (15) NOT NULL,
 zip CHAR (5) -- Zip Codes leading with '0' would lose leading '0' using INT
 );
@@ -60,7 +61,7 @@ emp_id INT NOT NULL,
 f_name VARCHAR (20) NOT NULL,
 l_name VARCHAR (20),
 salary MONEY NOT NULL,
-store_id INT NOT NULL
+store_id INT NOT NULL,
 manager_id INT NOT NULL,
 );
 
@@ -183,53 +184,106 @@ REFERENCES employee (emp_id);
 -- DATA INSERTION --
 ----------------------------------------------------------------
 
--- PK should start with the first number before each table name
--- ^^for example loyalty_no would be 1xxxx, store_id would be 2xxxx
-
 -- 1. MEMBER
 INSERT INTO member (loyalty_no, f_name, l_name, phone_no, email, loyalty_pts)
 VALUES
-(
-);
+(10001, 'Alice', 'Smith', '555-0101', 'alice.smith@email.com', 150),
+(10002, 'Bob', 'Jones', NULL, 'bjones99@email.com', 20),
+(10003, 'Charlie', 'Brown', '555-0103', NULL, 300),
+(10004, 'Diana', 'Prince', '555-0104', 'dprince@email.com', 500),
+(10005, 'Evan', 'Wright', '555-0105', 'ewright@email.com', 0),
+(10006, 'Fiona', 'Gallagher', NULL, NULL, 45),
+(10007, 'George', 'Costanza', '555-0107', 'gcostanza@email.com', 120),
+(10008, 'Hannah', 'Abbott', '555-0108', 'habbott@email.com', 890),
+(10009, 'Ian', 'Malcolm', '555-0109', NULL, 15),
+(10010, 'Julia', 'Child', '555-0110', 'jchild@email.com', 250);
 
 -- 2. STORE
-INSERT INTO store (store_id, street, city, state, phone_no, zip)
+INSERT INTO store (store_id, street, city, store_state, phone_no, zip)
 VALUES
-(
-);
+(20001, '123 Main St', 'Conway', 'AR', '555-2001', '72034'),
+(20002, '456 Oak Ave', 'Little Rock', 'AR', '555-2002', '72201'),
+(20003, '789 Pine Ln', 'Fayetteville', 'AR', '555-2003', '72701'),
+(20004, NULL, 'Bentonville', 'AR', '555-2004', NULL),
+(20005, '321 Elm St', 'Jonesboro', 'AR', '555-2005', '72401');
 
 -- 3. DEPARTMENT
 INSERT INTO department (department_id, department_name, temperature_controlled, store_id)
 VALUES
-(
-);
+(30001, 'Produce', 1, 20001),
+(30002, 'Dry Goods', 0, 20001),
+(30003, 'Meat & Seafood', 1, 20002),
+(30004, 'Bakery', 0, 20003),
+(30005, NULL, 1, 20005);
 
 -- 4. EMPLOYEE
-INSERT INTO employee (emp_id, f_name, l_name, salary, store_id)
+INSERT INTO employee (emp_id, f_name, l_name, salary, store_id, manager_id)
 VALUES
-(
-);
+(40001, 'Michael', 'Scott', 65000.00, 20001, 40001),
+(40002, 'Dwight', 'Schrute', 55000.00, 20001, 40001),
+(40003, 'Jim', 'Halpert', 50000.00, 20001, 40001),
+(40004, 'Pam', 'Beesly', 48000.00, 20002, 40005),
+(40005, 'Jan', 'Levinson', 85000.00, 20002, 40005),
+(40006, 'Angela', 'Martin', 52000.00, 20003, 40006),
+(40007, 'Kevin', 'Malone', 45000.00, 20003, 40006),
+(40008, 'Oscar', 'Martinez', 53000.00, 20004, 40008),
+(40009, 'Stanley', 'Hudson', 49000.00, 20005, 40010),
+(40010, 'Phyllis', 'Vance', 60000.00, 20005, 40010);
 
 -- 5. STAFF ROLE
 INSERT INTO staff_role (role_id, title, description, department_id)
 VALUES
-(
-);
+(50001, 'Manager', 'Oversees department operations', 30001),
+(50002, 'Stocker', 'Restocks shelves and manages inventory', 30002),
+(50003, 'Butcher', 'Prepares meat and seafood cuts', 30003),
+(50004, 'Baker', 'Bakes fresh breads and pastries', 30004),
+(50005, 'Clerk', NULL, 30005);
 
 -- 6. STAFFING
 INSERT INTO staffing (staff_id, needed_employees, emp_id, role_id)
 VALUES
-(
-);
+(60001, 2, 40001, 50001),
+(60002, 5, 40002, 50002),
+(60003, 3, 40004, 50003),
+(60004, 4, 40006, 50004),
+(60005, 2, 40009, 50005);
 
 -- 7. PRODUCT
+-- Note: Price constraint checked (>= 0 AND <= 500)
 INSERT INTO product (product_id, name, description, price, perishable, expiration_date, last_delivery, next_delivery, department_id)
 VALUES
-(
-);
+(70001, 'Organic Bananas', 'Bunch of 5-6 organic bananas', 2.99, 1, '2026-03-25', '2026-03-18', '2026-03-20', 30001),
+(70002, 'Honeycrisp Apples', '1 lb bag of apples', 4.50, 1, '2026-04-10', '2026-03-15', '2026-03-22', 30001),
+(70003, 'Canned Beans', 'Black beans 15oz', 1.25, 0, '2028-01-01', '2026-02-15', NULL, 30002),
+(70004, 'Jasmine Rice', '5 lb bag of white rice', 8.99, 0, '2027-06-30', '2026-03-01', '2026-04-01', 30002),
+(70005, 'Ribeye Steak', 'Choice cut 16oz', 18.50, 1, '2026-03-22', '2026-03-19', '2026-03-21', 30003),
+(70006, 'Salmon Fillet', 'Wild caught 8oz', 12.00, 1, '2026-03-21', '2026-03-18', '2026-03-20', 30003),
+(70007, 'Sourdough Loaf', 'Freshly baked daily', 5.99, 1, '2026-03-23', '2026-03-19', '2026-03-20', 30004),
+(70008, 'Chocolate Cake', '8-inch double layer cake', 24.99, 1, '2026-03-26', NULL, '2026-03-21', 30004),
+(70009, 'Frozen Pizza', 'Pepperoni 12-inch', 6.50, 1, '2026-12-31', '2026-03-10', '2026-03-24', 30005),
+(70010, 'Ice Cream', 'Vanilla Bean 1 Pint', 4.99, 1, '2026-10-15', '2026-03-12', '2026-03-26', 30005);
 
 -- 8. STORE TRANSACTION
+-- Note: trans_type constraint checked ('Return' or 'Sale')
 INSERT INTO store_transaction (receipt_no, total, register_no, trans_type, store_id, product_id, loyalty_no, emp_id)
 VALUES
-(
-);
+(80001, 2.99, 1, 'Sale', 20001, 70001, 10001, 40001),
+(80002, 18.50, 2, 'Sale', 20002, 70005, 10004, 40004),
+(80003, 12.00, 3, 'Return', 20002, 70006, 10004, 40005),
+(80004, 8.99, 1, 'Sale', 20001, 70004, 10002, 40002),
+(80005, 5.99, 4, 'Sale', 20003, 70007, 10007, 40006),
+(80006, 24.99, 4, 'Sale', 20003, 70008, 10008, 40007),
+(80007, 6.50, 5, 'Sale', 20005, 70009, 10010, 40009),
+(80008, 4.50, 1, 'Return', 20001, 70002, 10003, 40003),
+(80009, 1.25, 2, 'Sale', 20001, 70003, 10001, 40001),
+(80010, 4.99, 6, 'Sale', 20005, 70010, 10010, 40010);
+
+-- These will not be included on the copy file we turn in as per Phase II instructions
+SELECT * FROM member;
+SELECT * FROM store;
+SELECT * FROM department;
+SELECT * FROM employee;
+SELECT * FROM staff_role;
+SELECT * FROM staffing;
+SELECT * FROM product;
+SELECT * FROM store_transaction;
