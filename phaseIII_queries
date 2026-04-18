@@ -1,0 +1,114 @@
+-------------------------------------------------------------------
+-- QUERIES --
+-------------------------------------------------------------------
+
+--1 High Salary Employees
+-- Uses > and ORDER BY
+SELECT f_name, l_name, salary 
+FROM employee 
+WHERE salary > 50000 
+ORDER BY salary DESC;
+
+--2 Organic Perishable Products
+-- Uses LIKE and AND and Bit Operator
+-- Useful for produce managers auditing organic inventory
+SELECT name, price 
+FROM product 
+WHERE perishable = 1 AND name LIKE 'Organic%';
+
+--3 Employees Outside of Conway
+-- Multi-table (2). Uses !=
+SELECT e.f_name, e.l_name, s.city 
+FROM employee e 
+JOIN store s ON e.store_id = s.store_id 
+WHERE s.city != 'Conway';
+
+--4 Transactions Between 5 and 20 Dollars
+-- Multi-table (3+). Uses BETWEEN and ORDER BY
+SELECT m.f_name, p.name, t.total 
+FROM store_transaction t 
+JOIN member m ON t.loyalty_no = m.loyalty_no 
+JOIN product p ON t.product_id = p.product_id 
+WHERE t.total BETWEEN 5.00 AND 20.00 
+ORDER BY t.total ASC;
+
+--5 All Members and Their Transactions
+-- Outer Join (1). Yields different results than Inner Join (Shows Evan Wright with NULL transaction)
+SELECT m.f_name, m.l_name, t.receipt_no, t.total 
+FROM member m 
+LEFT JOIN store_transaction t ON m.loyalty_no = t.loyalty_no;
+
+--6 Members Missing Email Addresses
+-- Uses IS NULL and ORDER BY
+SELECT f_name, l_name, loyalty_pts 
+FROM member 
+WHERE email IS NULL 
+ORDER BY loyalty_pts DESC;
+
+--7 Employees in Specific Roles
+-- Multi-table (3+). Uses IN
+SELECT e.f_name, e.l_name, r.title 
+FROM employee e 
+JOIN staffing st ON e.emp_id = st.emp_id 
+JOIN staff_role r ON st.role_id = r.role_id 
+WHERE r.title IN ('Stocker', 'Clerk');
+
+--8 Members with Low Points and a Specific Email Domain
+-- Uses LIKE, AND, 
+-- Useful for marketing targeting low-engagement members on a specific platform
+SELECT f_name, l_name, email, loyalty_pts
+FROM member
+WHERE email LIKE '%@gmail.com' AND loyalty_pts < 200;
+
+--9 All Stores and Their Departments
+-- Outer Join (2). Yields different results than Inner Join (Shows Bentonville with NULL department)
+SELECT s.city, d.department_name 
+FROM department d 
+RIGHT JOIN store s ON d.store_id = s.store_id;
+
+--10 Members Who Can Receive Email Promotions
+-- Multi-table (2). Uses LIKE and OR
+-- Useful for identifying members reachable by email or phone for loyalty deals
+SELECT t.receipt_no, m.f_name, m.l_name 
+FROM store_transaction t 
+JOIN member m ON t.loyalty_no = m.loyalty_no 
+WHERE m.email LIKE '%@email.com' OR m.phone_no LIKE '555%';
+
+--11 Expensive Sale Transactions by Store
+-- Multi-table (3+). Uses >=, AND, ORDER BY
+SELECT s.city, p.name, t.total, t.trans_type 
+FROM store_transaction t 
+JOIN store s ON t.store_id = s.store_id 
+JOIN product p ON t.product_id = p.product_id 
+WHERE t.total >= 10.00 AND t.trans_type = 'Sale' 
+ORDER BY t.total DESC;
+
+--12 Cheap Products Sold and Cashier
+-- Multi-table (3+). Uses <=, ORDER BY
+SELECT p.name, p.price, e.f_name AS Employee, t.receipt_no 
+FROM store_transaction t 
+JOIN product p ON t.product_id = p.product_id 
+JOIN employee e ON t.emp_id = e.emp_id 
+WHERE p.price <= 5.00 
+ORDER BY p.price ASC;
+
+--13 Stores Outside the 501 Area Code
+-- Uses NOT LIKE
+-- Useful for regional managers identifying stores outside the central AR calling region
+SELECT city, street, phone_no
+FROM store
+WHERE phone_no NOT LIKE '%501%';
+
+--14 Departments Not in Conway
+-- Multi-table (2). Uses NOT IN
+-- Useful for helping direct customers to other locations for particular goods
+SELECT d.department_name, s.city 
+FROM department d 
+JOIN store s ON d.store_id = s.store_id 
+WHERE s.city NOT IN ('Conway');
+
+--15 Perishable Products Needing Delivery
+-- Uses Bit Operator, AND, IS NOT NULL
+SELECT name, expiration_date, next_delivery 
+FROM product 
+WHERE perishable = 1 AND next_delivery IS NOT NULL;
